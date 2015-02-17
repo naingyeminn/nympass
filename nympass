@@ -1,14 +1,29 @@
 #!/bin/bash
 
+passpath='/Users/yeminn/Dropbox/MyPrivate/nympass/'
 createpass() {
 	read -p "Name Pass : " passname
+	read -p "Account ID : " acctid
 	read -s -p "Enter Passphase : " passphase
 	echo ""
-	echo $passphase | openssl enc -aes-256-cbc -a -salt -pass pass:`ifconfig en4 | awk '/ether/{print $2}'` | openssl enc -aes-256-cbc -salt -out $passname
+	echo "$acctid:$passphase" | openssl enc -aes-256-cbc -a -salt -pass pass:$(ifconfig en4 | grep -Eo ..\(\:..\){5}) | openssl enc -aes-256-cbc -salt -out "$passpath$passname"
 }
 
 getpass() {
-	openssl enc -aes-256-cbc -d -salt -in $1 | openssl enc -aes-256-cbc -a -d -salt -pass pass:$(ifconfig en4 | awk '/ether/{print $2}') | tr -d '\n' | pbcopy
+	passdata=`openssl enc -aes-256-cbc -d -salt -in $1 | openssl enc -aes-256-cbc -a -d -salt -pass pass:$(ifconfig en4 | grep -Eo ..\(\:..\){5})`
+	echo "Account ID : $(echo $passdata | awk -F ":" '{print $1}')"
+	echo $passdata | awk -F ":" '{print $2}' | tr -d '\n' | pbcopy
 }
 
-getpass $1
+if [ -z "$1" ]; then
+	createpass
+else
+	case "$1" in
+		create)
+			createpass
+			;;
+		get)
+			getpass $2
+			;;
+	esac
+fi
