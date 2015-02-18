@@ -1,18 +1,32 @@
 #!/bin/bash
 
-passpath='/Users/yeminn/Dropbox/MyPrivate/nympass/'
+# You can set default directory for Password
+# e.g. passpath='/Users/yourname/Dropbox/nympassdata/'
+passpath=''
+
+# Set Network Interface Name of your System for Encryption
+# e.g. passkey=eth0..n (For Linux Users)
+# e.g. passkey=en0..n (For OS X Users)
+passkey=en4
+
 createpass() {
 	read -p "Name Pass : " passname
 	read -p "Account ID : " acctid
 	read -s -p "Enter Passphase : " passphase
 	echo ""
-	echo "$acctid:$passphase" | openssl enc -aes-256-cbc -a -salt -pass pass:$(ifconfig en4 | grep -Eo ..\(\:..\){5}) | openssl enc -aes-256-cbc -salt -out "$passpath$passname"
+	echo "$acctid:$passphase" | openssl enc -aes-256-cbc -a -salt -pass pass:$(ifconfig $passkey | grep -Eo ..\(\:..\){5}) | openssl enc -aes-256-cbc -salt -out "$passpath$passname"
 }
 
 getpass() {
-	passdata=`openssl enc -aes-256-cbc -d -salt -in $1 | openssl enc -aes-256-cbc -a -d -salt -pass pass:$(ifconfig en4 | grep -Eo ..\(\:..\){5})`
-	echo "Account ID : $(echo $passdata | awk -F ":" '{print $1}')"
-	echo $passdata | awk -F ":" '{print $2}' | tr -d '\n' | pbcopy
+	if [[ -x `which pbcopy` ]]; then
+		passdata=`openssl enc -aes-256-cbc -d -salt -in $1 | openssl enc -aes-256-cbc -a -d -salt -pass pass:$(ifconfig $passkey | grep -Eo ..\(\:..\){5})`
+		echo "Account ID : $(echo $passdata | awk -F ":" '{print $1}')"
+		echo $passdata | awk -F ":" '{print $2}' | tr -d '\n' | pbcopy
+	else
+		passdata=`openssl enc -aes-256-cbc -d -salt -in $1 | openssl enc -aes-256-cbc -a -d -salt -pass pass:$(ifconfig $passkey | grep -Eo ..\(\:..\){5})`
+		echo "Account ID : $(echo $passdata | awk -F ":" '{print $1}')"
+		echo $passdata | awk -F ":" '{print $2}' | tr -d '\n' | xclip -sel clip
+	fi
 }
 
 if [ -z "$1" ]; then
