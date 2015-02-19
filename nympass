@@ -29,6 +29,14 @@ getpass() {
 	fi
 }
 
+usage() {
+	echo "Usage : $0 [-h|--help] [create] [get password_file_path]"
+	echo "  -h | --help : Help. Display this message and quit."
+	echo "  create      : Create Password File."
+	echo "  get         : Get Password from Password File."
+	exit
+}
+
 if [ -z "$1" ]; then
 	createpass
 else
@@ -38,6 +46,12 @@ else
 			;;
 		get)
 			getpass $2
+			;;
+		-h|--help)
+			usage
+			;;
+		*)
+			usage
 			;;
 	esac
 fi
