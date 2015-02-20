@@ -72,7 +72,7 @@ enter aes-256-cbc decryption password: [Master Password]
 Account ID : facebook_user@gmail.com
 ```
 
-Password will be set in clipboard and cleaned up after **5 seconds**. Timeout duration can be defined in **Line 12**.
+> Password will be set in clipboard and cleaned up after **5 seconds**. Timeout duration can be defined in **Line 12**.
 
 ##License
 
