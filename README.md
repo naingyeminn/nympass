@@ -41,6 +41,8 @@ $ cd nympass-master
 $ sudo make
 ```
 
+> Mac OS X user should download the zip file directly from Browser if wget is not installed.
+
 ##Uninstall
 
 * Change into `nympass` directory in Terminal.
