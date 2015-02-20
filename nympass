@@ -9,14 +9,18 @@ passpath=''
 # e.g. passkey=en0..n (For OS X Users)
 passkey=en4
 
-timeout=5
+timeout=5 #Second to clean Clipboard
+
+getmac() {
+	ifconfig $passkey | grep -Eo ..\(\:..\){5}
+}
 
 createpass() {
 	read -p "Name Pass : " passname
 	read -p "Account ID : " acctid
 	read -s -p "Enter Passphase : " passphase
 	echo ""
-	echo "$acctid:$passphase" | openssl enc -aes-256-cbc -a -salt -pass pass:$(ifconfig $passkey | grep -Eo ..\(\:..\){5}) | openssl enc -aes-256-cbc -salt -out "$passpath$passname"
+	echo "$acctid:$passphase" | openssl enc -aes-256-cbc -a -salt -pass pass:$(getmac) | openssl enc -aes-256-cbc -salt -out "$passpath$passname"
 }
 
 clearbg() {
@@ -31,14 +35,15 @@ clearbg() {
 
 getpass() {
 	if [[ -x `which pbcopy` ]]; then
-		passdata=`openssl enc -aes-256-cbc -d -salt -in $1 | openssl enc -aes-256-cbc -a -d -salt -pass pass:$(ifconfig $passkey | grep -Eo ..\(\:..\){5})`
+		passdata=`openssl enc -aes-256-cbc -d -salt -in $1 | openssl enc -aes-256-cbc -a -d -salt -pass pass:$(getmac)`
 		echo "Account ID : $(echo $passdata | awk -F ":" '{print $1}')"
 		echo $passdata | awk -F ":" '{print $2}' | tr -d '\n' | pbcopy
 		clearbg &
 	else
-		passdata=`openssl enc -aes-256-cbc -d -salt -in $1 | openssl enc -aes-256-cbc -a -d -salt -pass pass:$(ifconfig $passkey | grep -Eo ..\(\:..\){5})`
+		passdata=`openssl enc -aes-256-cbc -d -salt -in $1 | openssl enc -aes-256-cbc -a -d -salt -pass pass:$(getmac)`
 		echo "Account ID : $(echo $passdata | awk -F ":" '{print $1}')"
 		echo $passdata | awk -F ":" '{print $2}' | tr -d '\n' | xclip -sel clip
+		clearbg &
 	fi
 }
 
