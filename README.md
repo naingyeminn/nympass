@@ -35,6 +35,14 @@ $ unzip nympass.zip
 $ cd nympass-master
 ```
 
+* Open `nympass` file with Text Editor.
+* Set `passpath` value in **Line 5** if you want to save the password files in specific location. e.g. `passpath='/home/username/passdir/'`
+* Replace `passkey` value in **Line 10** with your Ethernet Interface Name such as `eth0` or `eth1` or `en0` or `en1`.
+
+> Recommend to use the Interface Name of Thunderbolt Ethernet Adapter for a Macbook User.
+
+* Set `timeout` duration in **Line 12**. (Default is 5 Seconds)
+
 * Run "make" command as root:
 
 ```sh
