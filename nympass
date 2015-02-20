@@ -58,7 +58,7 @@ else
 			createpass
 			;;
 		get)
-			getpass $2
+			getpass $passpath$2
 			;;
 		-h|--help)
 			usage
