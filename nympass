@@ -18,7 +18,7 @@ getmac() {
 createpass() {
 	read -p "Name Pass : " passname
 	read -p "Account ID : " acctid
-	read -s -p "Enter Passphase : " passphase
+	read -s -p "Enter Passphrase : " passphase
 	echo ""
 	echo "$acctid [$passname]:$passphase" | openssl enc -aes-256-cbc -a -salt -pass pass:$(getmac) | openssl enc -aes-256-cbc -salt -out "$passpath$passname"
 }
