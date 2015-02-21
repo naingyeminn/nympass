@@ -20,7 +20,7 @@ createpass() {
 	read -p "Account ID : " acctid
 	read -s -p "Enter Passphase : " passphase
 	echo ""
-	echo "$acctid:$passphase" | openssl enc -aes-256-cbc -a -salt -pass pass:$(getmac) | openssl enc -aes-256-cbc -salt -out "$passpath$passname"
+	echo "$acctid [$passname]:$passphase" | openssl enc -aes-256-cbc -a -salt -pass pass:$(getmac) | openssl enc -aes-256-cbc -salt -out "$passpath$passname"
 }
 
 clearbg() {
