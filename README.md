@@ -57,7 +57,7 @@ $ sudo make uninstall
 $ nympass create
 Name Pass : facebook [Password File Name]
 Account ID : facebook_user@gmail.com [Account ID or Email]
-Enter Passphase : [Account Password]
+Enter Passphrase : [Account Password]
 enter aes-256-cbc encryption password: [Master Password]
 Verifying - enter aes-256-cbc encryption password: [Master Password]
 ```
