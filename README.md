@@ -5,7 +5,7 @@ NYMPASS is a shell script that allows you to save your passwords in encrypted fi
 ##Features
 * Password will be encrypted using the MAC address (Network Card's Hardware Address) of your System.
 * Encrypted password will be stored in encrypted File using a Passphrase.
-* When user decrypted the password, it will be set into the clipboard
+* When user decrypted the password, it will be set into the clipboard.
 * Clipboard will keep the password for only 5 seconds (Default).
 * Encrypted password files cannot be decrypted on other Systems without the right MAC address.
 * Macbook users can use Thunderbolt Ethernet Adapter as a Key to decrypt password files.
@@ -17,13 +17,13 @@ NYMPASS is a shell script that allows you to save your passwords in encrypted fi
 
 ##Installation
 
-* Download [NYMPASS](https://github.com/naingyeminn/nympass/archive/master.zip) zip file
+* Download [NYMPASS](https://github.com/naingyeminn/nympass/archive/master.zip) zip file.
 
 ```sh
 $ wget https://github.com/naingyeminn/nympass/archive/master.zip -O nympass.zip
 ```
 
-* Extract nympass.zip file
+* Extract nympass.zip file.
 
 ```sh
 $ unzip nympass.zip
@@ -54,7 +54,7 @@ $ sudo make
 ##Uninstall
 
 * Change into `nympass` directory in Terminal.
-* Run Following Command
+* Run Following Command.
 
 ```sh
 $ sudo make uninstall
