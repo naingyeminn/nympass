@@ -18,9 +18,9 @@ getmac() {
 createpass() {
 	read -p "Name Pass : " passname
 	read -p "Account ID : " acctid
-	read -s -p "Enter Passphrase : " passphase
+	read -s -p "Enter Passphrase : " passphrase
 	echo ""
-	echo "$acctid [$passname]:$passphase" | openssl enc -aes-256-cbc -a -salt -pass pass:$(getmac) | openssl enc -aes-256-cbc -salt -out "$passpath$passname"
+	echo "$acctid [$passname]:$passphrase" | openssl enc -aes-256-cbc -a -salt -pass pass:$(getmac) | openssl enc -aes-256-cbc -salt -out "$passpath$passname"
 }
 
 clearbg() {
@@ -33,7 +33,7 @@ clearbg() {
 	fi
 }
 
-getpass() {
+decpass() {
 	if [[ -x `which pbcopy` ]]; then
 		passdata=`openssl enc -aes-256-cbc -d -salt -in $1 | openssl enc -aes-256-cbc -a -d -salt -pass pass:$(getmac)`
 		echo "Account ID : $(echo $passdata | awk -F ":" '{print $1}')"
@@ -44,6 +44,18 @@ getpass() {
 		echo "Account ID : $(echo $passdata | awk -F ":" '{print $1}')"
 		echo $passdata | awk -F ":" '{print $2}' | tr -d '\n' | xclip -sel clip
 		clearbg &
+	fi
+}
+
+getpass() {
+	if [ -f "$1" ]; then
+		decpass $1
+	else
+		if [ -f "$passpath$(basename $1)" ]; then
+			decpass "$passpath$(basename $1)"
+		else
+			echo "File not found!"
+		fi
 	fi
 }
 
@@ -63,7 +75,10 @@ else
 			createpass
 			;;
 		get)
-			getpass $passpath$2
+			getpass $2
+			;;
+		change)
+			changepass
 			;;
 		-h|--help)
 			usage
