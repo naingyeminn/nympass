@@ -72,7 +72,23 @@ enter aes-256-cbc encryption password: [Master Password]
 Verifying - enter aes-256-cbc encryption password: [Master Password]
 ```
 
-> Password file will be created in current directory. User can define Default file path in Script's **Line number 5**. Network Interface Name is also needed to define. See in **Line number 10**.
+> Password file will be created in current directory. User can define Default file path in Script's **Line number 5**. 
+
+####Create in Default Directory
+
+User can use `-d` option to create password file in Default directory. 
+
+```sh
+$ nympass create -d
+```
+
+#### Create in Specific Directory
+
+User can specify password file path directly in command.
+
+```sh
+$ nympass create /home/user/Documents/MyPasswords
+```
 
 ###Get Password
 
@@ -82,7 +98,41 @@ enter aes-256-cbc decryption password: [Master Password]
 Account ID : facebook_user@gmail.com
 ```
 
+Or
+
+```sh
+$ nympass get /home/user/Documents/facebook
+```
+
 > Password will be set in clipboard and cleaned up after **5 seconds**. Timeout duration can be defined in **Line 12**.
+
+###Change Master Password
+
+```sh
+$ nympass change
+Enter Current Master Password : [Master Password]
+Enter New Master Password : [New Password]
+Verify New Master Password : [New Password Again]
+```
+
+> Password files in Default file path will be changed the Master Password.
+
+####Change Single Password File
+
+User can change Master Password of a password file.
+
+```sh
+$ nympass change /home/user/Documents/MyPasswords/facebook
+```
+
+####Change Multiple Password Files in a Directory
+
+User need to specify Directory Name of Password files.
+
+```sh
+$ nympass change /home/user/Documents/MyPasswords/
+```
+
 
 ##License
 
