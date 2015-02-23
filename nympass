@@ -2,7 +2,7 @@
 
 # You can set default directory for Password
 # e.g. passpath='/Users/yourname/Dropbox/nympassdata/'
-passpath=''
+passpath='/tmp/nympass'
 
 # Set Network Interface Name of your System for Encryption
 # e.g. passkey=eth0..n (For Linux Users)
@@ -38,6 +38,16 @@ encpass() {
 	echo "$acctid [$passname]:$passphrase" | openssl enc -aes-256-cbc -a -salt -pass pass:$(getmac) | openssl enc -aes-256-cbc -salt -out "$1/$passname"
 }
 
+chpass() {
+	passdata=`openssl enc -aes-256-cbc -d -salt -pass pass:"$2" -in $1`
+	if [ "$?" -eq "0" ]; then
+		echo "$passdata" | openssl enc -aes-256-cbc -salt -pass pass:"$3" -out $1
+		echo "Master Password for $1 has been changed!"
+	else
+		echo "Wrong Master Password for $1! Try Again."
+	fi
+}
+
 changepass() {
 	read -s -p "Enter Current Master Password : " oldpassphrase
 	echo ""
@@ -49,33 +59,19 @@ changepass() {
 		if [ -z "$1" ]; then
 			for file in "$passpath/"*
 			do
-				decpass=`openssl enc -aes-256-cbc -d -salt -pass pass:"$oldpassphrase" -in $file`
-				if [ "$?" -eq "0" ]; then
-					echo "$decpass" | openssl enc -aes-256-cbc -salt -pass pass:"$newpassphrase" -out $file
-					echo "Master Password has been changed!"
-				else
-					echo "Wrong Master Password! Try Again."
-				fi
+				chpass $file $oldpassphrase $newpassphrase
 			done
 		elif [ -f "$1" ]; then
-			decpass=`openssl enc -aes-256-cbc -d -salt -pass pass:"$oldpassphrase" -in $1`
-			if [ "$?" -eq "0" ]; then
-				echo "$decpass" | openssl enc -aes-256-cbc -salt -pass pass:"$newpassphrase" -out $1
-				echo "Master Password has been changed!"
-			else
-				echo "Wrong Master Password! Try Again."
-			fi
+			chpass $1 $oldpassphrase $newpassphrase
 		elif [ -d "$1" ]; then
 			for file in "$1/"*
 			do
-				decpass=`openssl enc -aes-256-cbc -d -salt -pass pass:"$oldpassphrase" -in $file`
-				if [ "$?" -eq "0" ]; then
-					echo "$decpass" | openssl enc -aes-256-cbc -salt -pass pass:"$newpassphrase" -out $file
-					echo "Master Password has been changed!"
-				else
-					echo "Wrong Master Password! Try Again."
-				fi
+				chpass $file $oldpassphrase $newpassphrase
 			done
+		elif [ -f "$passpath/$1" ]; then
+			chpass "$passpath/$1" $oldpassphrase $newpassphrase
+		else
+			echo "There's no Password file."
 		fi
 	else
 		echo "Password does not Match. Try Again."
