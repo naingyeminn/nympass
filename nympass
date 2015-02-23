@@ -2,7 +2,7 @@
 
 # You can set default directory for Password
 # e.g. passpath='/Users/yourname/Dropbox/nympassdata/'
-passpath='/tmp/nympass'
+passpath=''
 
 # Set Network Interface Name of your System for Encryption
 # e.g. passkey=eth0..n (For Linux Users)
