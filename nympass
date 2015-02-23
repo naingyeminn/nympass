@@ -23,6 +23,50 @@ createpass() {
 	echo "$acctid [$passname]:$passphrase" | openssl enc -aes-256-cbc -a -salt -pass pass:$(getmac) | openssl enc -aes-256-cbc -salt -out "$passpath$passname"
 }
 
+changepass() {
+	read -s -p "Enter Current Master Password : " oldpassphrase
+	echo ""
+	read -s -p "Enter New Master Password : " newpassphrase
+	echo ""
+	read -s -p "Verify New Master Password : " vfypassphrase
+	echo ""
+	if [ $newpassphrase == $vfypassphrase ]; then
+		if [ -z "$1" ]; then
+			for file in "$passpath"*
+			do
+				decpass=`openssl enc -aes-256-cbc -d -salt -pass pass:"$oldpassphrase" -in $file`
+				if [ "$?" -eq "0" ]; then
+					echo "$decpass" | openssl enc -aes-256-cbc -salt -pass pass:"$newpassphrase" -out $file
+					echo "Master Password has been changed!"
+				else
+					echo "Wrong Master Password! Try Again."
+				fi
+			done
+		elif [ -f "$1" ]; then
+			decpass=`openssl enc -aes-256-cbc -d -salt -pass pass:"$oldpassphrase" -in $1`
+			if [ "$?" -eq "0" ]; then
+				echo "$decpass" | openssl enc -aes-256-cbc -salt -pass pass:"$newpassphrase" -out $1
+				echo "Master Password has been changed!"
+			else
+				echo "Wrong Master Password! Try Again."
+			fi
+		elif [ -d "$1" ]; then
+			for file in "$1/"*
+			do
+				decpass=`openssl enc -aes-256-cbc -d -salt -pass pass:"$oldpassphrase" -in $file`
+				if [ "$?" -eq "0" ]; then
+					echo "$decpass" | openssl enc -aes-256-cbc -salt -pass pass:"$newpassphrase" -out $file
+					echo "Master Password has been changed!"
+				else
+					echo "Wrong Master Password! Try Again."
+				fi
+			done
+		fi
+	else
+		echo "Password does not Match. Try Again"
+	fi
+}
+
 clearbg() {
 	if [[ -x `which pbcopy` ]]; then
 		sleep $timeout
@@ -78,7 +122,7 @@ else
 			getpass $2
 			;;
 		change)
-			changepass
+			changepass $2
 			;;
 		-h|--help)
 			usage
