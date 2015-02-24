@@ -18,15 +18,12 @@ getmac() {
 createpass() {
 	if [ -z "$1" ]; then
 		encpass "$(pwd)"
-		echo "Password file is created in $(pwd)."
 	elif [ "$1" = "-d" ]; then
 		encpass "$passpath"
-		echo "Password file is created in $passpath."
 	elif [ -d $1 ]; then
 		encpass $1
-		echo "Password file is created in $1."
 	else
-		echo "$1 is not a Directory."
+		echo "$1 is not a Directory. Try Again."
 	fi
 }
 
@@ -35,7 +32,22 @@ encpass() {
 	read -p "Account ID : " acctid
 	read -s -p "Enter Passphrase : " passphrase
 	echo ""
-	echo "$acctid [$passname]:$passphrase" | openssl enc -aes-256-cbc -a -salt -pass pass:$(getmac) | openssl enc -aes-256-cbc -salt -out "$1/$passname"
+	if [ -f "$1/$passname" ]; then
+		echo "$passname file already exists in $1"
+		read -p "Do you want to overwrite? [y/N] : " response
+		case $response in
+			[yY][eE][sS]|[yY])
+				echo "$acctid [$passname]:$passphrase" | openssl enc -aes-256-cbc -a -salt -pass pass:$(getmac) | openssl enc -aes-256-cbc -salt -out "$1/$passname"
+				echo "$passname is created in $1."
+				;;
+			*)
+				Echo "$passname file is not overwritten."
+				;;
+		esac
+	else
+		echo "$acctid [$passname]:$passphrase" | openssl enc -aes-256-cbc -a -salt -pass pass:$(getmac) | openssl enc -aes-256-cbc -salt -out "$1/$passname"
+		echo "$passname is created in $1."
+	fi
 }
 
 chpass() {
