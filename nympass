@@ -15,6 +15,10 @@ getmac() {
 	ifconfig $passkey | grep -Eo ..\(\:..\){5}
 }
 
+listpass() {
+	ls $passpath
+}
+
 createpass() {
 	if [ -z "$1" ]; then
 		encpass "$(pwd)"
@@ -129,9 +133,11 @@ getpass() {
 usage() {
 	echo "Usage : $0 [-h|--help] [create] [change password_directory] [get password_file_path]"
 	echo "  -h | --help : Help. Display this message and quit."
-	echo "  create      : Create Password File."
+	echo "  create      : Create Password File in current Directory."
+	echo "  create -d   : Create Password File in default Password Directory."
 	echo "  change      : Change Master Password."
 	echo "  get         : Get Password from Password File."
+	echo "  list        : List Password files from default Password Directory."
 	exit
 }
 
@@ -141,6 +147,9 @@ else
 	case "$1" in
 		create)
 			createpass $2
+			;;
+		list)
+			listpass
 			;;
 		get)
 			getpass $2

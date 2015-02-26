@@ -72,7 +72,7 @@ enter aes-256-cbc encryption password: [Master Password]
 Verifying - enter aes-256-cbc encryption password: [Master Password]
 ```
 
-> Password file will be created in current directory. User can define Default file path in Script's **Line number 5**. 
+> Password file will be created in current directory. User can define Default file path in Script's **Line number 5**.
 
 ####Create in Default Directory
 
@@ -133,6 +133,11 @@ User need to specify Directory Name of Password files.
 $ nympass change /home/user/Documents/MyPasswords/
 ```
 
+###List Password Files from Default Password Directory
+
+```sh
+$ nympass list
+```
 
 ##License
 
