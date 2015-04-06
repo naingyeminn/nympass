@@ -2,12 +2,12 @@
 
 # You can set default directory for Password
 # e.g. passpath='/Users/yourname/Dropbox/nympassdata/'
-passpath=''
+passpath='./'
 
 # Set Network Interface Name of your System for Encryption
 # e.g. passkey=eth0..n (For Linux Users)
 # e.g. passkey=en0..n (For OS X Users)
-passkey=en4
+passkey=en0
 
 timeout=5 #Second to clean Clipboard
 
@@ -24,18 +24,25 @@ createpass() {
 		encpass "$(pwd)"
 	elif [ "$1" = "-d" ]; then
 		encpass "$passpath"
+	elif [ "$1" = "auto" ]; then
+		encpass "$passpath" $1
 	elif [ -d $1 ]; then
 		encpass $1
 	else
-		echo "$1 is not a Directory. Try Again."
+		echo "$1 is not a Directory or valid option. Try Again."
+		usage
 	fi
 }
 
 encpass() {
 	read -p "Name Pass : " passname
 	read -p "Account ID : " acctid
-	read -s -p "Enter Passphrase : " passphrase
-	echo ""
+	if [ "$2" = "auto" ]; then
+		passphrase=$(env LC_CTYPE=C tr -dc "a-zA-Z0-9-_\!\?@&#$" < /dev/urandom | head -c 20 | xargs)
+	else
+		read -s -p "Enter Passphrase : " passphrase
+		echo ""
+	fi
 	if [ -f "$1/$passname" ]; then
 		echo "$passname file already exists in $1"
 		read -p "Do you want to overwrite? [y/N] : " response
@@ -135,6 +142,7 @@ usage() {
 	echo "  -h | --help : Help. Display this message and quit."
 	echo "  create      : Create Password File in current Directory."
 	echo "  create -d   : Create Password File in default Password Directory."
+	echo "  create auto : Create Password File in default Password Directory with auto generated password."
 	echo "  change      : Change Master Password."
 	echo "  get         : Get Password from Password File."
 	echo "  list        : List Password files from default Password Directory."

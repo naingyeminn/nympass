@@ -82,6 +82,14 @@ User can use `-d` option to create password file in Default directory.
 $ nympass create -d
 ```
 
+####Create in Default Directory with auto generated Password
+
+User can use `auto` option to create password file in Default directory with auto generated password.
+
+```sh
+$ nympass create auto
+```
+
 #### Create in Specific Directory
 
 User can specify password file path directly in command.
